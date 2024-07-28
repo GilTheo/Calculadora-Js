@@ -17,7 +17,7 @@ class Carrito {
                     detallesCarrito += (i + 1) + '. ' + producto.nombre + ' - $' + producto.precio + '\n';
                 total += producto.precio;
             });
-            detallesCarrito += 'Total: $' + total;
+            detallesCarrito += '\nTotal: $' + total;
             return detallesCarrito;
         }
     }
