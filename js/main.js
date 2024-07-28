@@ -13,8 +13,8 @@ class Carrito {
                     } else {
                             let detallesCarrito = 'Carrito de compras:\n\n';
                             let total = 0;
-                            this.productos.forEach((producto, i) => {
-                    detallesCarrito += (i + 1) + '. ' + producto.nombre + ' - $' + producto.precio + '\n';
+                            this.productos.forEach((producto, el) => {
+                    detallesCarrito += (el + 1) + '. ' + producto.nombre + ' - $' + producto.precio + '\n';
                 total += producto.precio;
             });
             detallesCarrito += '\nTotal: $' + total;
