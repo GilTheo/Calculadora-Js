@@ -1,98 +1,158 @@
 class Carrito {
-        constructor() {
-                this.productos = [];
+    constructor() {
+        const carritoGuardado = JSON.parse(localStorage.getItem('carrito'));
+        this.productos = carritoGuardado || [];
     }
 
-    agregarProducto = (producto) => {
-        this.productos.push(producto);
-    }
-    
-        verCarrito() {
-                if (this.productos.length === 0) {
-                        return 'El carrito esta vacio.';
-                    } else {
-                            let detallesCarrito = 'Carrito de compras:\n\n';
-                            let total = 0;
-                            this.productos.forEach((producto, el) => {
-                    detallesCarrito += (el + 1) + '. ' + producto.nombre + ' - $' + producto.precio + '\n';
-                total += producto.precio;
+
+    verCarrito() {
+        const carritoContainer = document.getElementById("carritoContainer");
+        const totalContainer = document.getElementById("totalContainer")
+        carritoContainer.innerHTML = "";
+        totalContainer.innerHTML = "";
+
+        if (this.productos.length === 0) {
+            alert("El carrito esta vacio")
+        } else {
+            let total = 0;
+
+            this.productos.forEach((producto) => {
+                const card = document.createElement("div");
+                card.className = "card";
+
+                const titulo = document.createElement("h3");
+                titulo.innerText = producto.nombre;
+
+                const imagen = document.createElement("img");
+                imagen.src = producto.imagen;
+                imagen.className = "img";
+
+                const precio = document.createElement("p");
+                precio.innerText = "$" + producto.precio;
+
+                const cantidad = document.createElement("p");
+                cantidad.innerText = "Cantidad: " + producto.cantidad;
+
+                card.append(imagen);
+                card.append(titulo);
+                card.append(precio);
+                card.append(cantidad);
+
+                carritoContainer.appendChild(card);
+
+                total += producto.precio * producto.cantidad;
             });
-            detallesCarrito += '\nTotal: $' + total;
-            return detallesCarrito;
+
+            const precioTotal = document.createElement("p");
+            precioTotal.className = "precioTotal";
+            precioTotal.innerText = "Total: $" + total;
+            totalContainer.append(precioTotal);
         }
     }
+
+    agregarProducto(producto) {
+        const indexProducto = this.productos.findIndex(el => el.id === producto.id);
+        if (indexProducto !== -1) {
+            this.productos[indexProducto].cantidad += 1;
+        } else {
+            producto.cantidad = 1;
+            this.productos.push(producto);
+        }
+    }
+
+    vaciarCarrito() {
+        this.productos = [];
+        this.guardarCarrito();
+        const carritoContainer = document.getElementById("carritoContainer");
+        carritoContainer.innerHTML = "";
+        totalContainer.innerHTML = "";
+    }
+
+    guardarCarrito() {
+        localStorage.setItem('carrito', JSON.stringify(this.productos));
+    }
+
+    limpiarCarrito() {
+        localStorage.removeItem('carrito');
+    }
 }
+
+
 
 class Producto {
-    constructor (nombre, precio, estado){
-        this.nombre = nombre,
-        this.precio = precio,
-        this.estado = estado,
-        this.detalles = () => {
-            return 'Producto: ' + this.nombre + '\nPrecio: $' + this.precio + '\nEstado: ' + this.estado;
-        }
+    constructor(id, imagen, nombre, precio, estado) {
+        this.id = id;
+        this.imagen = imagen;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.estado = estado;
+        this.cantidad = 0;
+    }
+
+    detalles() {
+        return 'Producto: ' + this.nombre + '\nPrecio: $' + this.precio + '\nEstado: ' + this.estado;
     }
 }
 
-const producto1 = new Producto('sillon', 130, 'nuevo');
-const producto2 = new Producto('lampara', 19, 'nuevo');
-const producto3 = new Producto('alfombra', 13, 'usado');
-const producto4 = new Producto('mesa', 23, 'nuevo');
-const producto5 = new Producto('mantel', 3, 'usado')
+const producto1 = new Producto(1,'/assets/sillon.jpg','sillon', 130, 'nuevo');
+const producto2 = new Producto(2,'/assets/lampara.jpg','lampara', 15, 'nuevo');
+const producto3 = new Producto(3,'/assets/alfombra.jpg','alfombra', 13, 'usado');
+const producto4 = new Producto(4,'/assets/mesa.jpg','mesa', 23, 'nuevo');
+const producto5 = new Producto(5,'/assets/mantel.jpg','mantel', 3, 'usado');
 
 const productos = [producto1, producto2, producto3, producto4, producto5];
 const carrito = new Carrito();
 
-let inicio;
+const container = document.getElementById("container");
 
-do {
-    inicio = prompt('Bienvenido a mi tienda online\n\nEscribe CONTINUAR para continuar o SALIR para salir').toUpperCase();
+function createCard(producto) {
+    const card = document.createElement("div");
+    card.className = "card";
+    
+    const titulo = document.createElement("h3");
+    titulo.innerText = producto.nombre;
+    
+    const imagen = document.createElement("img");
+    imagen.src = producto.imagen;
+    imagen.className = "img";
+    
+    const precio = document.createElement("p");
+    precio.innerText = "$" + producto.precio;
 
-    if (inicio === 'CONTINUAR') {
-        let productosALaVenta = 'Estos son nuestros productos a la venta:\n';
-        productos.forEach(el => {
-            productosALaVenta += '- ' + el.nombre + '\n';
-        });
-        
-        let detalles;
-        do{
-        detalles = prompt(productosALaVenta + '\nEscribe el nombre del producto para ver mas detalles:\nEscribe CARRITO para ver el carrito o SALIR para salir').toLowerCase();
-        let productoEncontrado = productos.find(el => el.nombre.toLowerCase() === detalles.toLowerCase());
+    const estado = document.createElement("p");
+    estado.className = "estado";
+    estado.innerText = producto.estado;
+    
+    const boton = document.createElement("button");
+    boton.className = "btn";
+    boton.innerText = "Agregar al carrito";
+    boton.onclick = () => carrito.agregarProducto(producto);
+    
+    card.append(imagen);
+    card.append(titulo);
+    card.append(precio);
+    card.append(estado);
+    card.append(boton);
+    
+    container.append(card);
+}
 
-        if (productoEncontrado) {
-            alert(productoEncontrado.detalles());
+productos.forEach(el => createCard(el));
 
-            let comprar = confirm('Queres comprarlo?');
-            if (comprar){
-                carrito.agregarProducto(productoEncontrado);
-                let seguirComprando = confirm('Gracias por tu compra.\n\nToca aceptar si queres seguir comprando!');
-                if(!seguirComprando){
-                    inicio = 'SALIR';
-                    alert('Gracias por visitar o no nuestra tienda!');
-                    break
-                }
-            }else{
-                alert('Okey, segui navegando entonces!');
-            }
-        } else if(detalles === 'carrito'){
-            alert(carrito.verCarrito());
+const btnContainer = document.getElementById("btnContainer");
 
-        }else if(detalles === 'salir'){
-            alert('Gracias por visitar nuestra tienda');
-            break
+const vaciarCarrito = document.createElement("button");
+vaciarCarrito.className = "vaciarCarrito";
+vaciarCarrito.innerText = "Vaciar Carrito";
+vaciarCarrito.onclick = () => {
+    carrito.vaciarCarrito();
+    alert('Vaciaste el carrito');
+}
 
-        }else {
-            alert('Producto no encontrado. Intenta denuevo');
-        }
-    }while(true);
+const verCarrito = document.createElement("button");
+verCarrito.className = "verCarrito";
+verCarrito.innerText = "Ver Carrito";
+verCarrito.onclick = () => carrito.verCarrito();
 
-    } else if (inicio === 'SALIR') {
-        alert('Gracias por no visitar nuestra tienda!');
-
-    } else {
-        alert('Texto no valido. Escribe CONTINUAR o SALIR.');
-
-    }
-} while (inicio !== 'CONTINUAR' && inicio !== 'SALIR');
-
-
+btnContainer.append(vaciarCarrito);
+btnContainer.append(verCarrito);
