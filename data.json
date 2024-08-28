@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "imagen": "/assets/sillon.jpg",
+        "nombre": "sillon",
+        "precio": 130,
+        "estado": "nuevo"
+    },
+    {
+        "id": 2,
+        "imagen": "/assets/lampara.jpg",
+        "nombre": "lampara",
+        "precio": 15,
+        "estado": "nuevo"
+    },
+    {
+        "id": 3,
+        "imagen": "/assets/alfombra.jpg",
+        "nombre": "alfombra",
+        "precio": 13,
+        "estado": "usado"
+    },
+    {
+        "id": 4,
+        "imagen": "/assets/mesa.jpg",
+        "nombre": "mesa",
+        "precio": 23,
+        "estado": "nuevo"
+    },
+    {
+        "id": 5,
+        "imagen": "/assets/mantel.jpg",
+        "nombre": "mantel",
+        "precio": 3,
+        "estado": "usado"
+    }
+]
